@@ -18,11 +18,18 @@ class CreateBooksTable extends Migration
             $table->string('title');
             $table->year('year_published');
             $table->string('image_path');
+            $table->unsignedInteger('category_id');
             $table->unsignedInteger('author_id');
 
             $table->foreign('author_id')
             ->references('id')
             ->on('authors')
+            ->onDelete('cascade')
+            ->onUpdate('cascade');
+
+            $table->foreign('category_id')
+            ->references('id')
+            ->on('categories')
             ->onDelete('cascade')
             ->onUpdate('cascade');
         });
