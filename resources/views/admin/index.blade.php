@@ -20,7 +20,12 @@
 			<p class="lead">Manage Users</p>
 			<ul>
 				@foreach($collection['users'] as $user)
-				<li><a href="#">{{$user->firstname}}</a></li>
+				<li>
+					<button class="view-user" data-collection="{{$user}}">{{$user->firstname}}</button>
+					<p>{{$user->roles->name}}</p>
+					<button>view user</button>
+					<button>make admin</button>
+				</li>
 				@endforeach
 			</ul>
 		</div>
@@ -30,6 +35,7 @@
 			@foreach($collection['books'] as $book)
 				<p>{{$book->title}}</p>
 				<button class="update-book" data-collection="{{$book}}">Update</button>
+				<button class="delete-book" data-id="{{$book->id}}" data-name="{{$book->title}}">- Remove</button>
 			@endforeach
 		</div>
 		<div class="col-md-4">
@@ -262,6 +268,27 @@
 	</div>
 </div>
 
+{{-- Delete book modal --}}
+<div id="delete-book" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Delete Book</h5>
+				<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<p class="lead">Are You sure you want to delete <span id="delete-book-name"></span></p>
+				<form id="delete-book-form" action="/deleteAsset" method="POST">
+					@csrf
+					{{ method_field("DELETE") }}
+					<input id="book-delete-id" type="number" name="book_delete_id" hidden>
+					<button class="btn btn-block btn-danger" type="submit">- Remove</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
 {{-- add categories modal --}}
 <div id="add-category" class="modal fade" tabindex="-1" role="dialog">
 	<div class="modal-dialog" role="dialog">
@@ -412,6 +439,28 @@
 					<input id="status_delete_id" type="number" name="status_delete_id" hidden>
 					<button class="btn btn-block btn-danger" type="submit">- Remove</button>
 				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{-- view profile modal --}}
+<div id="view-profile" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<img id="user-dp" class="img-responsive" src="" alt="No Profile Picture Added">
+				<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<p id="user-firstname">firstname</p>
+				<p id="user-lastname">lastname</p>
+				<p id="user-email"></p>
+				<p id="user-address"></p>
+			</div>
+			<div class="modal-footer">
+				<button>Suspend User</button>
+				<button>Remove User</button>
 			</div>
 		</div>
 	</div>

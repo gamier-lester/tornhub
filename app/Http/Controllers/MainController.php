@@ -36,7 +36,8 @@ class MainController extends Controller
     		];
         	return view('admin.index', compact('collection'));
     	} else {
-    		return view('tornhub.index');
+            $books = Book::all();
+    		return view('tornhub.index', compact('books'));
     	}
     }
 }

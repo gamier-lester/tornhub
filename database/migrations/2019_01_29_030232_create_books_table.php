@@ -17,7 +17,7 @@ class CreateBooksTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->year('year_published');
-            $table->string('image_path');
+            $table->string('image_path')->nullable();
             $table->unsignedInteger('category_id');
             $table->unsignedInteger('author_id');
 

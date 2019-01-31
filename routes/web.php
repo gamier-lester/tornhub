@@ -28,8 +28,13 @@ Route::middleware("auth")->group(function () {
 	Route::patch('/updateStatus', 'StatusController@updateStatus');
 	Route::delete('/deleteStatus/{id}', 'StatusController@deleteStatus');
 	Route::patch('/updateAsset', 'BookController@updateAsset');
+	Route::delete('/deleteAsset/{id}', 'BookController@deleteAsset');
 	Route::patch('/updateCategory', 'CategoryController@updateCategory');
 	Route::delete('/deleteCategory/{id}', 'CategoryController@deleteCategory');
 	Route::patch('/updateAuthor', 'AuthorController@updateAuthor');
 	Route::delete('/deleteAuthor/{id}', 'AuthorController@deleteAuthor');
+
+	Route::get('/byCategory/{id}', 'CategoryController@showCategory');
 });
+
+Route::get('/test', 'HomeController@test');

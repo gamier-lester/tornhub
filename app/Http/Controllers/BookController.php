@@ -10,7 +10,7 @@ class BookController extends Controller
 {
     public function addAsset(Request $request){
     	$book = new Book;
-    	$book->timestamps = false;
+    	// $book->timestamps = false;
     	$book->title = $request->title;
     	$book->year_published = $request->publishYear;
     	$book->image_path = $request->image;
@@ -24,7 +24,7 @@ class BookController extends Controller
 
     public function updateAsset(Request $collection){
         $book = Book::find($collection->new_book_id);
-        $book->timestamps = false;
+        // $book->timestamps = false;
         $book->title = $collection->new_title;
         $book->year_published = $collection->new_publishYear;
         $book->image_path = $collection->new_image;
@@ -34,5 +34,24 @@ class BookController extends Controller
 
         Session::flash("success_message","Asset updated successfully");
         return redirect('/dashboard');
+    }
+
+    public function deleteAsset($id){
+        $book = Book::find($id);
+        $book->delete();
+
+        Session::flash("success_message","Asset deleted successfully");
+        return redirect('/dashboard');
+    }
+
+    public function restoreAsset($id){
+        $item = Item::withTrashed()->find($id);
+        // We need to use withTrashed to include "soft-deleted" items in the query
+        $item->restore();
+        return redirect("/catalog");
+    }
+
+    public function showAssets($id){
+        
     }
 }

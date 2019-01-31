@@ -64,6 +64,14 @@ $(document).ready(() => {
 		$('#update-book').modal('show');
 	});
 
+	$(document).on('click', '.delete-book', event => {
+		// $(event.target).
+		// console.log($("#delete-status-form").attr('action'));
+		$('#delete-book-name').text($(event.target).attr('data-name'));
+		$("#delete-book-form").attr('action', '/deleteAsset/'+$(event.target).attr('data-id'));
+		$("#delete-book").modal("show");
+	});
+
 	$(document).on('click', '.update-category', event => {
 		// console.log($(event.target).attr('data-id'));
 		$("#update-category-id").val($(event.target).attr('data-id'));
@@ -91,6 +99,23 @@ $(document).ready(() => {
 		$('#delete-author-name').text($(event.target).attr('data-name'));
 		$("#delete-author-form").attr('action', '/deleteAuthor/'+$(event.target).attr('data-id'));
 		$("#delete-author").modal("show");
+	});
+
+	$(document).on('click', '.view-user', event => {
+		// $(event.target).data('collection');
+		let firstname = $(event.target).data('collection')['firstname'];
+		let lastname = $(event.target).data('collection')['lastname'];
+		let email = $(event.target).data('collection')['email'];
+		let address = $(event.target).data('collection')['address'];
+		let image_path = $(event.target).data('collection')['image_path'];
+
+		$('#user-firstname').text(firstname);
+		$('#user-lastname').text(lastname);
+		$('#user-email').text(email);
+		$('#user-address').text(address);
+		$('#user-dp').attr('src', image_path);
+
+		$('#view-profile').modal('show');
 	});
 
 });

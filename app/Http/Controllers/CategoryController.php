@@ -35,4 +35,11 @@ class CategoryController extends Controller
     	Session::flash("success_message","Category deleted successfully");
     	return redirect('/dashboard');
     }
+
+    public function showCategory($id){
+        $category = Category::find($id);
+        $books = $category->books;
+
+        return view('tornhub.index', compact('books'));
+    }
 }
