@@ -37,20 +37,24 @@
 								<th scope="row">{{$user->id}}</th>
 								<td>{{$user->email}}</td>
 								<td>
-									@if($user->roles->name != "admin")
-									<form action="/user/makeAdmin" method="POST">
+									@if($user->roles->name == "admin" && $user->id === Auth::user()->id)
+									<button class="view-user btn" role="button" data-collection="{{$user}}">Edit Profile</button>
+									@elseif($user->roles->name != "admin")
+									<form action="/user/makeAdmin" method="POST" class="d-inline">
 										@csrf
+										{{ method_field("PATCH") }}
 										<input type="number" name="user_id" value="{{$user->id}}" hidden>
 										<button class="btn btn-danger" type="submit">Make Admin</button>
 									</form>
 									@else
-									<form action="/user/removeAdmin" method="POST">
+									<form action="/user/removeAdmin" method="POST" class="d-inline">
 										@csrf
+										{{ method_field("PATCH") }}
 										<input type="number" name="user_id" value="{{$user->id}}" hidden>
 										<button class="btn btn-danger" type="submit">Remove Admin</button>
 									</form>
 									@endif
-									<button class="view-user btn btn-primary" data-collection="{{$user}}">View Details</button>
+									<button class="view-user btn btn-primary" data-collection="{{$user}}">Details</button>
 								</td>
 							</tr>
 							@endforeach
@@ -61,29 +65,19 @@
 				<!-- Manage authors section -->
 				<div class="col-md-3">
 					<p class="lead">All Authors</p>
-					<button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#add-author">Add Author</button>
-					@foreach($collection['authors'] as $author)
-						<p>{{$author->name}}</p>
-						<button class="update-author" data-id="{{$author->id}}" data-name="{{$author->name}}">Update</button>
-						<button class="delete-author" data-id="{{$author->id}}" data-name="{{$author->name}}">Remove</button>
-					@endforeach
+
 
 					<ul class="list-group">
+						<li class="list-group-item d-flex justify-content-between align-items-center">
+							<button class="btn btn-outline-primary btn-block" type="button" data-toggle="modal" data-target="#add-author">Add Author</button>
+						</li>
 						@foreach(\App\Author::all() as $author)
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<a href="#collapse-{{$author->id}}" data-toggle="collapse"  role="button">{{$author->name}}</a>
 							<span class="badge badge-primary badge-pill">{{$author->books->count()}}</span>
-							<div id="collapse-{{$author-id}}" class="collapse">
-								<div class="card card-body">
-									<div class="row">
-										<div class="col-md-6">
-											<button class="update-author btn btn-block" data-id="{{$author->id}}" data-name="{{$author->name}}">Update</button>
-										</div>
-										<div class="col-md-6">
-											<button class="delete-author btn btn-block btn-danger" data-id="{{$author->id}}" data-name="{{$author->name}}">Remove</button>
-										</div>
-									</div>
-								</div>
+							<div id="collapse-{{$author->id}}" class="collapse">
+								<button class="update-author btn btn-block" data-id="{{$author->id}}" data-name="{{$author->name}}">Update</button>
+								<button class="delete-author btn btn-block btn-danger" data-id="{{$author->id}}" data-name="{{$author->name}}">Remove</button>
 							</div>
 						</li>
 						@endforeach
@@ -126,30 +120,29 @@
 
 				<!-- Manage Books Section -->
 				<div class="col-md-6">
-					<p class="lead">Manage Assets</p>
-					<button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#add-book">Add Book</button>
-					@foreach($collection['books'] as $book)
-						<p>{{$book->title}}</p>
-						<button class="update-book" data-collection="{{$book}}">Update</button>
-						<button class="delete-book" data-id="{{$book->id}}" data-name="{{$book->title}}">- Remove</button>
-					@endforeach
+					<p class="lead">Manage Books</p>
 
 					<div class="row">
 						<div class="col-md-4">
+							<button class="btn btn-outline-primary btn-block mb-1" type="button" data-toggle="modal" data-target="#add-book">Add Book</button>
 							<div id="book-list" class="list-group" role="tablist">
+							<?php $list_count = 0;?>
 							@foreach(\App\Book::all() as $book)
-								<a class="list-group-item list-group-item-action" data-toggle="list" href="#book{{$book->id}}" role="tab">{{$book->title}}</a>
+								<a class="list-group-item list-group-item-action <?php if($list_count === 0){ echo 'active';} ?>" data-toggle="list" href="#book{{$book->id}}" role="tab">{{$book->title}}</a>
+								<?php $list_count++ ?>
 							@endforeach
 							</div>
 						</div>
 						<div class="col-md-8">
 							<div class="tab-content" id="nav-tabContent">
+								<?php $list_count = 0;?>
 								@foreach(\App\Book::all() as $book)
-								<div class="tab-pane" id="home" role="tabpanel">
+								<div class="tab-pane <?php if($list_count === 0){ echo 'active';} ?>" id="book{{$book->id}}" role="tabpanel">
 									<p>{{$book->title}}</p>
 									<p>{{$book->authors->name}}</p>
 									<button class="update-book" data-collection="{{$book}}">Update</button>
 									<button class="delete-book" data-id="{{$book->id}}" data-name="{{$book->title}}">- Remove</button>
+									<?php $list_count++ ?>
 								</div>
 								@endforeach
 							</div>

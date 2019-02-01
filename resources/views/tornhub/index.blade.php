@@ -4,6 +4,9 @@
 	<div class="row">
 		<div class="col-md-3">
 			<ul class="list-group">
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					<a href="/dashboard">All</a>
+				</li>
 				@foreach(\App\Category::all() as $category)
 				<li class="list-group-item d-flex justify-content-between align-items-center">
 					<a href="/byCategory/{{$category->id}}">{{$category->name}}</a>
@@ -22,8 +25,18 @@
 							<p class="card-text">asdasd</p>
 						</div>
 						<div class="card-footer">
-							<button>Borrow</button>
-							<button>Return</button>
+							@foreach(\App\Transaction::all() as $transaction)
+								@if($transaction->user_id === Auth::user()->id && $transaction->book_id === $book->id)
+									<button>Return</button>
+								@else
+									<form action="/book/borrow" method="POST" class="d-inline">
+										@csrf
+										<input type="number" name="user_id" value="{{Auth::user()->id}}" hidden>
+										<input type="number" name="book_id" value="{{$book->id}}" hidden>
+										<button type="submit" class="btn btn-success">Borrow</button>
+									</form>
+								@endif
+							@endforeach
 						</div>
 					</div>
 				</div>

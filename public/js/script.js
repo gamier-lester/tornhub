@@ -118,4 +118,9 @@ $(document).ready(() => {
 		$('#view-profile').modal('show');
 	});
 
+	$('#book-list a').on('click', function (e) {
+		e.preventDefault();
+		$(this).tab('show');
+	});
+
 });

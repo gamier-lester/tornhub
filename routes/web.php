@@ -35,6 +35,11 @@ Route::middleware("auth")->group(function () {
 	Route::delete('/deleteAuthor/{id}', 'AuthorController@deleteAuthor');
 
 	Route::get('/byCategory/{id}', 'CategoryController@showCategory');
+
+	Route::patch('/user/makeAdmin', 'AdminController@makeAdmin');
+	Route::patch('/user/removeAdmin', 'AdminController@removeAdmin');
+
+	Route::post('/book/borrow', 'TransactionController@bookBorrow');
 });
 
 Route::get('/test', 'HomeController@test');

@@ -74,7 +74,7 @@ class RegisterController extends Controller
             'image_path' => 'asdasd',
             'password' => Hash::make($data['password']),
             'account_status' => 1,
-            'account_role' => 1
+            'account_role' => 2
         ]);
     }
 }
