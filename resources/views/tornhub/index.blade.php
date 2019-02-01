@@ -26,15 +26,22 @@
 						</div>
 						<div class="card-footer">
 							@foreach(\App\Transaction::all() as $transaction)
-								@if($transaction->user_id === Auth::user()->id && $transaction->book_id === $book->id)
-									<button>Return</button>
-								@else
-									<form action="/book/borrow" method="POST" class="d-inline">
+								@if($transaction->user_id === Auth::user()->id)
+									@if($transaction->book_id === $book->id)
+									<form action="/book/return" method="POST" class="d-inline">
 										@csrf
-										<input type="number" name="user_id" value="{{Auth::user()->id}}" hidden>
-										<input type="number" name="book_id" value="{{$book->id}}" hidden>
-										<button type="submit" class="btn btn-success">Borrow</button>
+										{{ method_field("PATCH") }}
+										<input type="number" name="transaction_id" value="{{$transaction->id}}" hidden>
+										<button>Return</button>
 									</form>
+									@else
+										<form action="/book/borrow" method="POST" class="d-inline">
+											@csrf
+											<input type="number" name="user_id" value="{{Auth::user()->id}}" hidden>
+											<input type="number" name="book_id" value="{{$book->id}}" hidden>
+											<button type="submit" class="btn btn-success">Borrow</button>
+										</form>
+									@endif
 								@endif
 							@endforeach
 						</div>
@@ -42,6 +49,11 @@
 				</div>
 				@endforeach
 			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			payment here
 		</div>
 	</div>
 

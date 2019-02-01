@@ -40,4 +40,8 @@ class MainController extends Controller
     		return view('tornhub.index', compact('books'));
     	}
     }
+
+    public function updateUser(){
+        
+    }
 }

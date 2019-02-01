@@ -170,6 +170,7 @@
 		</div>
 		
 		<!-- lower layer -->
+		<!-- Transactions section -->
 		<div class="col-md-12">
 			<p class="lead">Manage Transactions</p>
 			<button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#add-transaction">Add Transaction</button>
@@ -178,6 +179,38 @@
 				<li><p>{{$transaction->id}}</p></li>
 			@endforeach
 			</ul>
+
+			<table>
+				<thead>
+					<tr>
+						<td>Transaction ID</td>
+						<td>Email</td>
+						<td>Book</td>
+						<td>Status</td>
+						<td>Action</td>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach(\App\Transaction::all() as $transaction)
+					<tr>
+						<td>{{$transaction->id}}</td>
+						<td>{{$transaction->users->email}}</td>
+						<td>{{$transaction->books->title}}</td>
+						<td>{{$transaction->statuses->name}}</td>
+						<td>
+							@if($transaction->statuses->name == "pending")
+							<form action="/transaction/approve" method="POST">
+								@csrf
+								{{method_field("PATCH")}}
+								<input type="number" name="transaction_id" value="{{$transaction->id}}" hidden>
+								<button type="submit">Approve</button>
+							</form>
+							@endif
+						</td>
+					</tr>
+					@endforeach
+				</tbody>
+			</table>
 		</div>
 
 	</div> <!-- end of main row -->

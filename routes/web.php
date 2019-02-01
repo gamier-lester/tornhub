@@ -40,6 +40,8 @@ Route::middleware("auth")->group(function () {
 	Route::patch('/user/removeAdmin', 'AdminController@removeAdmin');
 
 	Route::post('/book/borrow', 'TransactionController@bookBorrow');
+	Route::patch('/book/return', 'TransactionController@bookReturn');
+	Route::patch('/transaction/approve', 'TransactionController@approveRequest');
 });
 
 Route::get('/test', 'HomeController@test');
