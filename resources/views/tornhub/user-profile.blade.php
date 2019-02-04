@@ -14,9 +14,10 @@
 	<form action="user/update" method="POST">
 		@csrf
 		{{ method_field("PATCH") }}
-		<input type="email" name="email" value="{{Auth::user()->email}}">
+		<input type="email" name="email" value="{{Auth::user()->email}}" readonly>
 		<input type="text" name="firstname" value="{{Auth::user()->firstname}}">
 		<input type="text" name="lastname" value="{{Auth::user()->lastname}}">
+		<textarea name="address">{{Auth::user()->address}}</textarea>
 		<button>Update details</button>
 	</form>
 	@foreach(\App\User::all() as $user)

@@ -127,4 +127,9 @@ $(document).ready(() => {
 		$(this).tab('show');
 	});
 
+	$('#user-list a').on('click', function (e) {
+		e.preventDefault();
+		$(this).tab('show');
+	});
+
 });

@@ -57,6 +57,8 @@ Route::middleware("auth")->group(function () {
 	Route::get('/AuthorWorks/{id}', 'MainController@showAuthorAndBook');
 	Route::patch('/book/Restore/{id}', 'BookController@bookRestore');
 	Route::delete('/book/forceRemove/{id}', 'BookController@bookForceRemove');
+	Route::patch('/admin/updateProfile', 'MainController@updateProfile');
+	Route::patch('/user/update', 'MainController@updateMyProfile');
 });
 
 Route::get('/test', 'HomeController@test');

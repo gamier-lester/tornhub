@@ -13,13 +13,25 @@ class BookController extends Controller
     	// $book->timestamps = false;
     	$book->title = $request->title;
     	$book->year_published = $request->publishYear;
-    	$book->image_path = $request->image;
+    	// $book->image_path = $request->image;
     	$book->category_id = $request->category;
     	$book->author_id = $request->author;
+        $book->description = $request->description;
+        $book->status_id = 8;
+        $book->quantity = 0;
+
+        $image = $request->file('image');
+        $image_name=time(). "." .$image->getClientOriginalExtension();
+        $destination = "images/";
+        $image->move($destination, $image_name);
+
+        $book->image_path=$destination.$image_name;
+
     	$book->save();
 
     	Session::flash("success_message","Asset added successfully");
     	return redirect('/dashboard');
+        // dd($request);
     }
 
     public function updateAsset(Request $collection){
@@ -27,13 +39,23 @@ class BookController extends Controller
         // $book->timestamps = false;
         $book->title = $collection->new_title;
         $book->year_published = $collection->new_publishYear;
-        $book->image_path = $collection->new_image;
+        // $book->image_path = $collection->new_image;
         $book->category_id = $collection->new_category;
         $book->author_id = $collection->new_author;
+        $book->description = $collection->new_description;
+
+        $image = $request->file('image');
+        $image_name=time(). "." .$image->getClientOriginalExtension();
+        $destination = "images/";
+        $image->move($destination, $image_name);
+
+        $book->image_path=$destination.$image_name;
+
         $book->save();
 
         Session::flash("success_message","Asset updated successfully");
         return redirect('/dashboard');
+        // dd($collection);
     }
 
     public function deleteAsset($id){

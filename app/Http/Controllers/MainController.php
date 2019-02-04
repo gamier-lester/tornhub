@@ -53,4 +53,27 @@ class MainController extends Controller
             return redirect('/dashboard');
         }
     }
+
+    public function updateProfile(Request $collection){
+        $user = User::find($collection->user_id);
+        // dd($user);
+        $user->firstname = $collection->user_firstname;
+        $user->lastname = $collection->user_lastname;
+        $user->address = $collection->user_address;
+        $user->save();
+
+        return redirect('/dashboard');
+    }
+
+    public function updateMyProfile(Request $collection){
+        $user = User::find($collection->user_id);
+        // dd($user);
+        $user->firstname = $collection->firstname;
+        $user->lastname = $collection->lastname;
+        $user->address = $collection->address;
+        $user->save();
+
+        return redirect('/dashboard');
+    }
+
 }

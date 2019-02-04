@@ -19,7 +19,7 @@
 				@foreach($books as $book)
 				<div class="col-md-5">
 					<div class="card">
-						<img class="card-img-top" src="{{$book->image_path}}" alt="Book Picture">
+						<img class="card-img-top" src="/{{$book->image_path}}" alt="Book Picture">
 						<div class="card-body">
 							<h5 class="card-title">{{$book->title}}</h5>
 							<p class="card-text">asdasd</p>
@@ -92,11 +92,6 @@
 				</div>
 				@endforeach
 			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12">
-			payment here
 		</div>
 	</div>
 

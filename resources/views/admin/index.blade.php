@@ -134,13 +134,10 @@
 							<div class="tab-content" id="nav-tabContent">
 								<?php $list_count = 0;?>
 								@foreach(\App\Book::all() as $book)
-								<div class="tab-pane <?php if($list_count === 0){ echo 'active';} ?>" id="book{{$book->id}}" role="tabpanel">
+								<div class="tab-pane book-hub <?php if($list_count === 0){ echo 'active';} ?>" id="book{{$book->id}}" role="tabpanel" style="background-image: ulr({{$book->image_path}});">
 									<p class="lead">Title: {{$book->title}}</p>
 									<p>Author: {{$book->authors->name}}</p>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-									tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-									quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-									consequat.</p>
+									<p>{{$book->description}}</p>
 									<button class="update-book btn" data-collection="{{$book}}">Update</button>
 									<button class="delete-book btn btn-danger" data-id="{{$book->id}}" data-name="{{$book->title}}">- Remove</button>
 									<?php $list_count++ ?>
@@ -205,6 +202,11 @@
 							</tr>
 						</thead>
 						<tbody>
+							@if($collection['transactions']->count() === 0)
+								<tr>
+									<td scope="row" colspan="6" class="text-center"><h3>Nothing Found</h3></td>
+								</tr>
+							@else
 							@foreach($collection['transactions'] as $transaction)
 							{{-- @foreach(\App\Transaction::paginate(10) as $transaction) --}}
 							<tr>
@@ -215,14 +217,14 @@
 								<td>{{$transaction->books->title}}</td>
 								<td>{{$transaction->statuses->name}}</td>
 								<td>
-									{{-- @if($transaction->statuses->name == "pending")
+									@if($transaction->statuses->name == "pending")
 									<form action="/transaction/approve" method="POST">
 										@csrf
 										{{method_field("PATCH")}}
 										<input type="number" name="transaction_id" value="{{$transaction->id}}" hidden>
 										<button type="submit">Approve</button>
 									</form>
-									@endif --}}
+									@endif
 								</td>
 								{{-- {{dd($transaction->users)}} --}}
 							</tr>
@@ -232,6 +234,7 @@
 							{{$collection['transactions']->links()}}
 							{{-- {{\App\Transaction::paginate(10)->links()}} --}}
 						</tfoot>
+						@endif
 					</table>
 				</div>
 			</div>
@@ -321,11 +324,15 @@
 				<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
 			</div>
 			<div class="modal-body">
-				<form action="/addAsset" method="POST">
+				<form action="/addAsset" method="POST" enctype="multipart/form-data">
 					@csrf
 					<div class="form-group">
 						<label>Book Title:</label>
 						<input class="form-control" type="text" name="title">
+					</div>
+					<div class="form-group">
+						<label>About: </label>
+						<textarea class="form-control" name="description" rows="5"></textarea>
 					</div>
 					<div class="form-group">
 						<label>Publish Year:</label>
@@ -371,13 +378,17 @@
 				<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
 			</div>
 			<div class="modal-body">
-				<form action="/updateAsset" method="POST">
+				<form action="/updateAsset" method="POST" enctype="multipart/form-data">
 					@csrf
 					{{ method_field("PATCH") }}
 					<input id="book_id" type="number" name="new_book_id" hidden>
 					<div class="form-group">
 						<label>Book Title:</label>
 						<input class="form-control" type="text" name="new_title">
+					</div>
+					<div class="form-group">
+						<label>About: </label>
+						<textarea class="form-control" name="new_description" rows="5"></textarea>
 					</div>
 					<div class="form-group">
 						<label>Publish Year:</label>
@@ -630,13 +641,20 @@
 					{{method_field("PATCH")}}
 					<input type="number" name="user_id" value="{{Auth::user()->id}}" hidden>
 					<div class="form-group">
-						<input class="form-control" type="text" name="user_firstname" value="{{Auth::user()->firstname}}">
+						<label for="user_email">Email</label>
+						<input id="user_email"  class="text-center form-control" type="text" name="user_email" value="{{Auth::user()->email}}" readonly>
 					</div>
 					<div class="form-group">
-						<input class="form-control" type="text" name="user_firstname" value="{{Auth::user()->lastname}}">
+						<label for="user_firstname">firstname</label>
+						<input id="user_firstname" class="text-center form-control" type="text" name="user_firstname" value="{{Auth::user()->firstname}}">
 					</div>
 					<div class="form-group">
-						<input class="form-control" type="text" name="user_address" value="{{Auth::user()->address}}">
+						<label for="user_lastname">lastname</label>
+						<input id="user_lastname" class="text-center form-control" type="text" name="user_firstname" value="{{Auth::user()->lastname}}">
+					</div>
+					<div class="form-group">
+						<label for="user_address">address</label>
+						<input id="user_address" class="text-center form-control" type="text" name="user_address" value="{{Auth::user()->address}}">
 					</div>
 					<button class="form-control" type="submit" class="btn btn-success">Update My Profile</button>
 				</form>
