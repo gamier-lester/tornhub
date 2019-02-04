@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Book;
 use App\Author;
@@ -25,7 +26,9 @@ class MainController extends Controller
     		$authors = Author::all();
     		$statuses = Status::all();
     		$categories = Category::all();
-    		$transactions = Transaction::all();
+            // $transactions = Transaction::all();
+            // $transactions = DB::table('transactions')->paginate(2);
+            $transactions = Transaction::paginate(10);
     		$collection = [
     			'users' => $users,
     			'books' => $books,
@@ -41,7 +44,13 @@ class MainController extends Controller
     	}
     }
 
-    public function updateUser(){
-        
+    public function showAuthorAndBook($id){
+        if(Auth::user()->account_role === 1){
+            $author = Author::find($id);
+            $collection = ['authors' => $author];
+            return view('admin.books_author', compact('collection'));
+        } else {
+            return redirect('/dashboard');
+        }
     }
 }

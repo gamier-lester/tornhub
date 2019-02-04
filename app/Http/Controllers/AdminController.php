@@ -25,4 +25,8 @@ class AdminController extends Controller
     	return redirect('/dashboard');
     }
 
+    public function updateProfile(Request $collection){
+
+    }
+
 }

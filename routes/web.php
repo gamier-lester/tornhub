@@ -42,6 +42,21 @@ Route::middleware("auth")->group(function () {
 	Route::post('/book/borrow', 'TransactionController@bookBorrow');
 	Route::patch('/book/return', 'TransactionController@bookReturn');
 	Route::patch('/transaction/approve', 'TransactionController@approveRequest');
+
+	Route::get('/assets', function () {
+		return view('tornhub.user-assets');
+	});
+
+	Route::get('/user/profile', function(){
+		return view('tornhub.user-profile');
+	});
+
+	Route::get('/dashboard/transactionApproved', 'TransactionController@sortTransactionByApproved');
+	Route::get('/dashboard/transactionPending', 'TransactionController@sortTransactionByPending');
+	Route::get('/dashboard/transactionReturned', 'TransactionController@sortTransactionByReturned');
+	Route::get('/AuthorWorks/{id}', 'MainController@showAuthorAndBook');
+	Route::patch('/book/Restore/{id}', 'BookController@bookRestore');
+	Route::delete('/book/forceRemove/{id}', 'BookController@bookForceRemove');
 });
 
 Route::get('/test', 'HomeController@test');

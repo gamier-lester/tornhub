@@ -11,10 +11,10 @@ class Transaction extends Model
     }
 
     public function statuses(){
-    	return $this->belongsTo("\App\Status");
+    	return $this->belongsTo("\App\Status", 'transaction_status');
     }
 
     public function users(){
-    	return $this->belongsTo("\App\User");
+    	return $this->belongsTo("\App\User", 'user_id');
     }
 }

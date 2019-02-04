@@ -54,4 +54,20 @@ class BookController extends Controller
     public function showAssets($id){
         
     }
+
+    public function bookRestore($id, Request $collection){
+        $book = Book::withTrashed()->find($collection->book_id);
+        $book->restore();
+        // echo $id;
+        // $book->save();
+        return redirect('/AuthorWorks/'.$id);
+    }
+
+    public function bookForceRemove($id, Request $collection){
+        $book = Book::withTrashed()->find($collection->book_id);
+        $book->forceDelete();
+        // echo $id;
+        return redirect('/AuthorWorks/'.$id);
+    }
+
 }

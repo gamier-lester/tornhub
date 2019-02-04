@@ -14,7 +14,7 @@
 		<div class="col-md-9">
 			<div class="row">
 			@foreach(\App\Transaction::all() as $transaction)
-				@if($transaction->user_id === Auth::user()->id && $transaction->transaction_status === //trans id of borrowed)
+				@if($transaction->user_id === Auth::user()->id && $transaction->transaction_status === 4){{-- //trans id of borrowed) --}}
 					<div class="col-md-4">
 						<div class="card">
 							<div class="card-header">

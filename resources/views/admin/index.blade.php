@@ -38,7 +38,7 @@
 								<td>{{$user->email}}</td>
 								<td>
 									@if($user->roles->name == "admin" && $user->id === Auth::user()->id)
-									<button class="view-user btn" role="button" data-collection="{{$user}}">Edit Profile</button>
+									<button class="edit-current-user btn" role="button" data-collection="{{$user}}">Edit Profile</button>
 									@elseif($user->roles->name != "admin")
 									<form action="/user/makeAdmin" method="POST" class="d-inline">
 										@csrf
@@ -76,6 +76,7 @@
 							<a href="#collapse-{{$author->id}}" data-toggle="collapse"  role="button">{{$author->name}}</a>
 							<span class="badge badge-primary badge-pill">{{$author->books->count()}}</span>
 							<div id="collapse-{{$author->id}}" class="collapse">
+								<a href="/AuthorWorks/{{$author->id}}" role="button">View Books</a>
 								<button class="update-author btn btn-block" data-id="{{$author->id}}" data-name="{{$author->name}}">Update</button>
 								<button class="delete-author btn btn-block btn-danger" data-id="{{$author->id}}" data-name="{{$author->name}}">Remove</button>
 							</div>
@@ -87,39 +88,35 @@
 			</div> <!-- end of row inside 12 column grid -->
 
 		</div>
-
+		<hr>
+		{{-- statuses section --}}
 		<!-- middle layer -->
 		<div class="col-md-12">
 			<div class="row">		
-				<div class="col-md-3">
+				<div class="col-md-4">
 					<p class="lead">Manage Statuses</p>
-					<button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#add-status">Add Status</button>
-					<ul>
-					@foreach($collection['statuses'] as $status)
-						<li>
-							<p>{{$status->name}}</p>
-							<button class="update-status" data-id="{{$status->id}}" data-name="{{$status->name}}">Update</button>
-							<button class="delete-status" data-id="{{$status->id}}">Remove</button>
-						</li>
-					@endforeach
-					</ul>
-					{{-- <a href="#">Add Status</a> --}}
-					<!-- <form action="/addStatus" method="POST">
-						{{csrf_field()}}
-						<div class="form-group">
-							<label>Status Name</label>
-							<input type="text" name="status" class="form-control">
-						</div>
-						<button id="add-status" type="submit" class="btn btn-success btn-block">Add Status</button>
-					</form> -->
+					<button class="btn btn-outline-primary btn-block" type="button" data-toggle="modal" data-target="#add-status">Add Status</button>
 
-					<ul class="list-group">
-						<li class=""></li>
-					</ul>
+					<div class="row justify-content-center">	
+					@foreach(\App\Status::all() as $status)
+						<div class="col-md-3 rounded m-1 text-center">
+							<div class="row">
+								<a href="#collapse-statuses-{{$status->id}}" data-toggle="collapse" class="list-group-item d-flex justify-content-between align-items-center d-inline col-md-12 rounded m-1 text-center">
+									{{$status->name}}
+								</a>
+								<div id="collapse-statuses-{{$status->id}}" class="collapse col-md-12">
+									<button class="update-status btn btn-block update-status" data-id="{{$status->id}}" data-name="{{$status->name}}">Update</button>
+									<button class="delete-status btn btn-block btn-danger delete-status" data-id="{{$status->id}}">Remove</button>
+								</div>
+							</div>
+						</div>
+						
+					@endforeach
+					</div>
 				</div>
 
 				<!-- Manage Books Section -->
-				<div class="col-md-6">
+				<div class="col-md-4 border border-dark p-2 rounded">
 					<p class="lead">Manage Books</p>
 
 					<div class="row">
@@ -138,10 +135,14 @@
 								<?php $list_count = 0;?>
 								@foreach(\App\Book::all() as $book)
 								<div class="tab-pane <?php if($list_count === 0){ echo 'active';} ?>" id="book{{$book->id}}" role="tabpanel">
-									<p>{{$book->title}}</p>
-									<p>{{$book->authors->name}}</p>
-									<button class="update-book" data-collection="{{$book}}">Update</button>
-									<button class="delete-book" data-id="{{$book->id}}" data-name="{{$book->title}}">- Remove</button>
+									<p class="lead">Title: {{$book->title}}</p>
+									<p>Author: {{$book->authors->name}}</p>
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+									tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+									quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+									consequat.</p>
+									<button class="update-book btn" data-collection="{{$book}}">Update</button>
+									<button class="delete-book btn btn-danger" data-id="{{$book->id}}" data-name="{{$book->title}}">- Remove</button>
 									<?php $list_count++ ?>
 								</div>
 								@endforeach
@@ -151,66 +152,92 @@
 				</div>
 
 
-				<div class="col-md-3">
+				<div class="col-md-4">
 					<p class="lead">Manage Categories</p>
-					<button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#add-category">Add Category</button>
-					<ul>
-					@foreach($collection['categories'] as $category)
-						<li>
-							<p>{{$category->name}}</p>
-							<button class="update-category" data-id="{{$category->id}}" data-name="{{$category->name}}">Update</button>
-							<button class="delete-category" data-id="{{$category->id}}" data-name="{{$category->name}}">- Remove</button>
-						</li>
+					<button class="btn btn-outline-primary btn-block" type="button" data-toggle="modal" data-target="#add-category">Add Category</button>
+					<div class="row justify-content-center">	
+					@foreach(\App\Category::all() as $category)
+						<div class="col-md-3 rounded m-1 text-center">
+							<div class="row">
+								<a href="#collapse-categories-{{$category->id}}" data-toggle="collapse" class="list-group-item d-flex justify-content-between align-items-center d-inline col-md-12 rounded m-1 text-center">
+									{{$category->name}}
+								</a>
+								<div id="collapse-categories-{{$category->id}}" class="collapse col-md-12">
+									<button class="update-category btn btn-block update-status" data-id="{{$category->id}}" data-name="{{$category->name}}">Update</button>
+									<button class="delete-category btn btn-block btn-danger delete-status" data-id="{{$category->id}}">Remove</button>
+								</div>
+							</div>
+						</div>
+						
 					@endforeach
-					</ul>
+					</div>
+				</div>
+
 				</div>
 
 
 			</div>
 		</div>
-		
+		<hr>
 		<!-- lower layer -->
 		<!-- Transactions section -->
 		<div class="col-md-12">
 			<p class="lead">Manage Transactions</p>
-			<button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#add-transaction">Add Transaction</button>
-			<ul>
-			@foreach($collection['transactions'] as $transaction)
-				<li><p>{{$transaction->id}}</p></li>
-			@endforeach
-			</ul>
+{{-- 			<button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#add-transaction">Add Transaction</button> --}}
+			<div class="row">
+				<div class="col-md-3">
+					<div class="list-group">
+						<a class="list-group-item list-group-item-action" href="/dashboard">All</a>
+						<a class="list-group-item list-group-item-action" href="/dashboard/transactionApproved">Approved</a>
+						<a class="list-group-item list-group-item-action" href="/dashboard/transactionPending">Pending</a>
+						<a class="list-group-item list-group-item-action" href="/dashboard/transactionReturned">Returned</a>
+					</div>
+				</div>
+				<div class="col-md-9">
+					<table class="table table-striped">
+						<thead class="thead-dark">
+							<tr>
+								<th>Transaction Date</th>
+								<th>Email</th>
+								<th>Book</th>
+								<th>Status</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach($collection['transactions'] as $transaction)
+							{{-- @foreach(\App\Transaction::paginate(10) as $transaction) --}}
+							<tr>
+								{{-- <td>{{$transaction->id}}</td> --}}
+								<td>{{$transaction->created_at->diffForHumans()}}</td>
+								{{-- <td>{{dd($transaction->users)}}</td> --}}
+								<td>{{$transaction->users->email}}</td>
+								<td>{{$transaction->books->title}}</td>
+								<td>{{$transaction->statuses->name}}</td>
+								<td>
+									{{-- @if($transaction->statuses->name == "pending")
+									<form action="/transaction/approve" method="POST">
+										@csrf
+										{{method_field("PATCH")}}
+										<input type="number" name="transaction_id" value="{{$transaction->id}}" hidden>
+										<button type="submit">Approve</button>
+									</form>
+									@endif --}}
+								</td>
+								{{-- {{dd($transaction->users)}} --}}
+							</tr>
+							@endforeach
+						</tbody>
+						<tfoot>
+							{{$collection['transactions']->links()}}
+							{{-- {{\App\Transaction::paginate(10)->links()}} --}}
+						</tfoot>
+					</table>
+				</div>
+			</div>
 
-			<table>
-				<thead>
-					<tr>
-						<td>Transaction ID</td>
-						<td>Email</td>
-						<td>Book</td>
-						<td>Status</td>
-						<td>Action</td>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach(\App\Transaction::all() as $transaction)
-					<tr>
-						<td>{{$transaction->id}}</td>
-						<td>{{$transaction->users->email}}</td>
-						<td>{{$transaction->books->title}}</td>
-						<td>{{$transaction->statuses->name}}</td>
-						<td>
-							@if($transaction->statuses->name == "pending")
-							<form action="/transaction/approve" method="POST">
-								@csrf
-								{{method_field("PATCH")}}
-								<input type="number" name="transaction_id" value="{{$transaction->id}}" hidden>
-								<button type="submit">Approve</button>
-							</form>
-							@endif
-						</td>
-					</tr>
-					@endforeach
-				</tbody>
-			</table>
+			
+			
 		</div>
 
 	</div> <!-- end of main row -->
@@ -315,7 +342,7 @@
 						<label>Category:</label>
 						<select class="form-control" name="category">
 							{{-- <option value="1">asdsad</option> --}}
-							@foreach($collection['categories'] as $category)
+							@foreach(\App\Category::all() as $category)
 							<option value="{{$category->id}}">{{$category->name}}</option>
 							@endforeach
 						</select>
@@ -323,7 +350,7 @@
 					<div class="form-group">
 						<label>Author:</label>
 						<select class="form-control" name="author">
-							@foreach($collection['authors'] as $author)
+							@foreach(\App\Author::all() as $author)
 							<option value="{{$author->id}}">{{$author->name}}</option>
 							@endforeach
 						</select>
@@ -367,7 +394,7 @@
 						<label>Category:</label>
 						<select class="form-control" name="new_category">
 							{{-- <option value="1">asdsad</option> --}}
-							@foreach($collection['categories'] as $category)
+							@foreach(\App\Category::all() as $category)
 							<option class="update-book-categories" value="{{$category->id}}">{{$category->name}}</option>
 							@endforeach
 						</select>
@@ -375,12 +402,12 @@
 					<div class="form-group">
 						<label>Author:</label>
 						<select class="form-control" name="new_author">
-							@foreach($collection['authors'] as $author)
+							@foreach(\App\Author::all() as $author)
 							<option class="update-book-authors" value="{{$author->id}}">{{$author->name}}</option>
 							@endforeach
 						</select>
 					</div>
-					<button class="btn btn-block btn-success" type="submit">+ Add</button>
+					<button class="btn btn-block btn-success" type="submit">+ Update</button>
 				</form>
 			</div>
 		</div>
@@ -584,3 +611,41 @@
 		</div>
 	</div>
 </div>
+
+{{-- edit profile modal --}}
+<div id="edit-current-profile" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<img id="user-dp" class="img-responsive" src="" alt="No Profile Picture Added">
+				<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+			</div>
+			<div class="modal-body">
+				{{-- <p id="user-firstname">{{Auth::user()->username}}</p>
+				<p id="user-lastname">lastname</p>
+				<p id="user-email"></p>
+				<p id="user-address"></p> --}}
+				<form action="/admin/updateProfile" method="POST">
+					@csrf
+					{{method_field("PATCH")}}
+					<input type="number" name="user_id" value="{{Auth::user()->id}}" hidden>
+					<div class="form-group">
+						<input class="form-control" type="text" name="user_firstname" value="{{Auth::user()->firstname}}">
+					</div>
+					<div class="form-group">
+						<input class="form-control" type="text" name="user_firstname" value="{{Auth::user()->lastname}}">
+					</div>
+					<div class="form-group">
+						<input class="form-control" type="text" name="user_address" value="{{Auth::user()->address}}">
+					</div>
+					<button class="form-control" type="submit" class="btn btn-success">Update My Profile</button>
+				</form>
+
+			</div>
+			<div class="modal-footer">
+
+			</div>
+		</div>
+	</div>
+</div>
+

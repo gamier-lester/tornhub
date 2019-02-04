@@ -19,7 +19,7 @@
 		<input type="text" name="lastname" value="{{Auth::user()->lastname}}">
 		<button>Update details</button>
 	</form>
-	@foreach(\App\User as $user)
+	@foreach(\App\User::all() as $user)
 		@if($user->id === Auth::user()->id)
 			<p>current transactions: {{$user->transactions->count()}}</p>
 		@endif
