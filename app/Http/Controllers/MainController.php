@@ -11,6 +11,7 @@ use App\Author;
 use App\Status;
 use App\Category;
 use App\Transaction;
+use Session;
 
 class MainController extends Controller
 {
@@ -20,7 +21,7 @@ class MainController extends Controller
     }
 
     public function index(){
-    	if(Auth::user()->account_role===1){
+    	if(Auth::user()->roles->name == "admin"){
     		$users = User::all();
     		$books = Book::all();
     		$authors = Author::all();
@@ -45,24 +46,13 @@ class MainController extends Controller
     }
 
     public function showAuthorAndBook($id){
-        if(Auth::user()->account_role === 1){
+        if(Auth::user()->roles->name === "admin"){
             $author = Author::find($id);
             $collection = ['authors' => $author];
             return view('admin.books_author', compact('collection'));
         } else {
             return redirect('/dashboard');
         }
-    }
-
-    public function updateProfile(Request $collection){
-        $user = User::find($collection->user_id);
-        // dd($user);
-        $user->firstname = $collection->user_firstname;
-        $user->lastname = $collection->user_lastname;
-        $user->address = $collection->user_address;
-        $user->save();
-
-        return redirect('/dashboard');
     }
 
     public function updateMyProfile(Request $collection){
@@ -73,6 +63,38 @@ class MainController extends Controller
         $user->address = $collection->address;
         $user->save();
 
+        return redirect('/dashboard');
+    }
+
+    public function updateProfile(Request $collection){
+        $user = User::find($collection->user_id);
+        // dd($user);
+        $user->firstname = $collection->firstname;
+        $user->lastname = $collection->lastname;
+        $user->address = $collection->address;
+        $user->save();
+
+        return redirect('/dashboard');
+    }
+
+
+    public function updateMyProfilePic(Request $collection){
+        //var_dump($collection->file('image'));
+        if($collection->file('image') === NULL){
+            Session::flash("error_message","Error in updating image");
+            return redirect('/dashboard');
+        }
+        $user = User::find($collection->user_id);
+        // dd($user);
+        $image = $collection->file('image');
+        $image_name=time(). "." .$image->getClientOriginalExtension();
+        $destination = "images/";
+        $image->move($destination, $image_name);
+
+        $user->image_path=$destination.$image_name;
+
+    	$user->save();
+        Session::flash("success_message","Success in updating image");
         return redirect('/dashboard');
     }
 

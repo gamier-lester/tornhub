@@ -8,189 +8,30 @@
 		<p class="lead">How about going back to the<a href="#"> home page </a></p>
 	</div>
 @endif
-@else	
-	<div class="jumbotron text-center">
+@else
+	
+	<!-- <div class="jumbotron text-center">
 		<h4 class="display-4">Welcome {{Auth::user()->firstname}}</h4>
 		<p class="lead">What would you like to do</p>
-	</div>
+	</div> -->
 
-	<div class="row">
+	<div class="row mx-0 justify-content-center">
 		{{-- <div class="col-md-6"></div> --}}
-		<!-- upper layer -->
-		<div class="col-md-12">
-			<div class="row">
-				<!-- Manager users section -->
-				<div class="col-md-9">
-					<h5>All Users</h5>
-					<table class="table table-borderless table-light">
-						<!-- can be table-dark -->
-						<thead>
-							<tr>
-								<th scope="col">User ID</th>
-								<th scope="col">User Email</th>
-								<th scope="col">Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							@foreach(\App\User::all() as $user)
-							<tr>
-								<th scope="row">{{$user->id}}</th>
-								<td>{{$user->email}}</td>
-								<td>
-									@if($user->roles->name == "admin" && $user->id === Auth::user()->id)
-									<button class="edit-current-user btn" role="button" data-collection="{{$user}}">Edit Profile</button>
-									@elseif($user->roles->name != "admin")
-									<form action="/user/makeAdmin" method="POST" class="d-inline">
-										@csrf
-										{{ method_field("PATCH") }}
-										<input type="number" name="user_id" value="{{$user->id}}" hidden>
-										<button class="btn btn-danger" type="submit">Make Admin</button>
-									</form>
-									@else
-									<form action="/user/removeAdmin" method="POST" class="d-inline">
-										@csrf
-										{{ method_field("PATCH") }}
-										<input type="number" name="user_id" value="{{$user->id}}" hidden>
-										<button class="btn btn-danger" type="submit">Remove Admin</button>
-									</form>
-									@endif
-									<button class="view-user btn btn-primary" data-collection="{{$user}}">Details</button>
-								</td>
-							</tr>
-							@endforeach
-						</tbody>
-					</table>
-				</div>
-
-				<!-- Manage authors section -->
-				<div class="col-md-3">
-					<p class="lead">All Authors</p>
-
-
-					<ul class="list-group">
-						<li class="list-group-item d-flex justify-content-between align-items-center">
-							<button class="btn btn-outline-primary btn-block" type="button" data-toggle="modal" data-target="#add-author">Add Author</button>
-						</li>
-						@foreach(\App\Author::all() as $author)
-						<li class="list-group-item d-flex justify-content-between align-items-center">
-							<a href="#collapse-{{$author->id}}" data-toggle="collapse"  role="button">{{$author->name}}</a>
-							<span class="badge badge-primary badge-pill">{{$author->books->count()}}</span>
-							<div id="collapse-{{$author->id}}" class="collapse">
-								<a href="/AuthorWorks/{{$author->id}}" role="button">View Books</a>
-								<button class="update-author btn btn-block" data-id="{{$author->id}}" data-name="{{$author->name}}">Update</button>
-								<button class="delete-author btn btn-block btn-danger" data-id="{{$author->id}}" data-name="{{$author->name}}">Remove</button>
-							</div>
-						</li>
-						@endforeach
-					</ul>
-				</div>
-
-			</div> <!-- end of row inside 12 column grid -->
-
-		</div>
-		<hr>
-		{{-- statuses section --}}
-		<!-- middle layer -->
-		<div class="col-md-12">
-			<div class="row">		
-				<div class="col-md-4">
-					<p class="lead">Manage Statuses</p>
-					<button class="btn btn-outline-primary btn-block" type="button" data-toggle="modal" data-target="#add-status">Add Status</button>
-
-					<div class="row justify-content-center">	
-					@foreach(\App\Status::all() as $status)
-						<div class="col-md-3 rounded m-1 text-center">
-							<div class="row">
-								<a href="#collapse-statuses-{{$status->id}}" data-toggle="collapse" class="list-group-item d-flex justify-content-between align-items-center d-inline col-md-12 rounded m-1 text-center">
-									{{$status->name}}
-								</a>
-								<div id="collapse-statuses-{{$status->id}}" class="collapse col-md-12">
-									<button class="update-status btn btn-block update-status" data-id="{{$status->id}}" data-name="{{$status->name}}">Update</button>
-									<button class="delete-status btn btn-block btn-danger delete-status" data-id="{{$status->id}}">Remove</button>
-								</div>
-							</div>
-						</div>
-						
-					@endforeach
-					</div>
-				</div>
-
-				<!-- Manage Books Section -->
-				<div class="col-md-4 border border-dark p-2 rounded">
-					<p class="lead">Manage Books</p>
-
-					<div class="row">
-						<div class="col-md-4">
-							<button class="btn btn-outline-primary btn-block mb-1" type="button" data-toggle="modal" data-target="#add-book">Add Book</button>
-							<div id="book-list" class="list-group" role="tablist">
-							<?php $list_count = 0;?>
-							@foreach(\App\Book::all() as $book)
-								<a class="list-group-item list-group-item-action <?php if($list_count === 0){ echo 'active';} ?>" data-toggle="list" href="#book{{$book->id}}" role="tab">{{$book->title}}</a>
-								<?php $list_count++ ?>
-							@endforeach
-							</div>
-						</div>
-						<div class="col-md-8">
-							<div class="tab-content" id="nav-tabContent">
-								<?php $list_count = 0;?>
-								@foreach(\App\Book::all() as $book)
-								<div class="tab-pane book-hub <?php if($list_count === 0){ echo 'active';} ?>" id="book{{$book->id}}" role="tabpanel" style="background-image: ulr({{$book->image_path}});">
-									<p class="lead">Title: {{$book->title}}</p>
-									<p>Author: {{$book->authors->name}}</p>
-									<p>{{$book->description}}</p>
-									<button class="update-book btn" data-collection="{{$book}}">Update</button>
-									<button class="delete-book btn btn-danger" data-id="{{$book->id}}" data-name="{{$book->title}}">- Remove</button>
-									<?php $list_count++ ?>
-								</div>
-								@endforeach
-							</div>
-						</div>
-					</div>
-				</div>
-
-
-				<div class="col-md-4">
-					<p class="lead">Manage Categories</p>
-					<button class="btn btn-outline-primary btn-block" type="button" data-toggle="modal" data-target="#add-category">Add Category</button>
-					<div class="row justify-content-center">	
-					@foreach(\App\Category::all() as $category)
-						<div class="col-md-3 rounded m-1 text-center">
-							<div class="row">
-								<a href="#collapse-categories-{{$category->id}}" data-toggle="collapse" class="list-group-item d-flex justify-content-between align-items-center d-inline col-md-12 rounded m-1 text-center">
-									{{$category->name}}
-								</a>
-								<div id="collapse-categories-{{$category->id}}" class="collapse col-md-12">
-									<button class="update-category btn btn-block update-status" data-id="{{$category->id}}" data-name="{{$category->name}}">Update</button>
-									<button class="delete-category btn btn-block btn-danger delete-status" data-id="{{$category->id}}">Remove</button>
-								</div>
-							</div>
-						</div>
-						
-					@endforeach
-					</div>
-				</div>
-
-				</div>
-
-
-			</div>
-		</div>
-		<hr>
-		<!-- lower layer -->
 		<!-- Transactions section -->
 		<div class="col-md-12">
-			<p class="lead">Manage Transactions</p>
+			<!-- <p class="lead">Manage Transactions</p> -->
 {{-- 			<button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#add-transaction">Add Transaction</button> --}}
-			<div class="row">
+			<div class="row justify-content-center">
 				<div class="col-md-3">
 					<div class="list-group">
+						<p class="list-group-item list-group-item-action active">Manage Transactions</p>
 						<a class="list-group-item list-group-item-action" href="/dashboard">All</a>
 						<a class="list-group-item list-group-item-action" href="/dashboard/transactionApproved">Approved</a>
 						<a class="list-group-item list-group-item-action" href="/dashboard/transactionPending">Pending</a>
 						<a class="list-group-item list-group-item-action" href="/dashboard/transactionReturned">Returned</a>
 					</div>
 				</div>
-				<div class="col-md-9">
+				<div class="col-md-8">
 					<table class="table table-striped">
 						<thead class="thead-dark">
 							<tr>
@@ -222,7 +63,7 @@
 										@csrf
 										{{method_field("PATCH")}}
 										<input type="number" name="transaction_id" value="{{$transaction->id}}" hidden>
-										<button type="submit">Approve</button>
+										<button class="btn btn-block btn-success" type="submit">Approve</button>
 									</form>
 									@endif
 								</td>
@@ -231,7 +72,9 @@
 							@endforeach
 						</tbody>
 						<tfoot>
-							{{$collection['transactions']->links()}}
+							<tr>
+								<td>{{$collection['transactions']->links()}}</td>
+							</tr>
 							{{-- {{\App\Transaction::paginate(10)->links()}} --}}
 						</tfoot>
 						@endif
@@ -240,6 +83,181 @@
 			</div>
 
 			
+			
+		</div>
+		<!-- end of transactions section -->
+		<!-- upper layer -->
+		<h5 class="text-center">Library Content</h5>
+		<div class="col-md-12">
+			<div class="row justify-content-center">
+			<!--  -->
+				<!-- Manage Books Section -->
+				<div class="col-md-12">
+					<div class="row justify-content-center">
+						<div class="col-md-3 mb-5">
+							<button class="btn btn-outline-primary btn-block mb-1" type="button" data-toggle="modal" data-target="#add-book">Add Book</button>
+							<div id="book-list" class="list-group" role="tablist">
+							<?php $list_count = 0;?>
+							@foreach(\App\Book::all() as $book)
+								<a class="list-group-item list-group-item-action <?php if($list_count === 0){ echo 'active';} ?>" data-toggle="list" href="#book{{$book->id}}" role="tab">{{$book->title}}</a>
+								<?php $list_count++ ?>
+							@endforeach
+							</div>
+						</div>
+						<div class="col-md-8">
+							<div class="tab-content" id="nav-tabContent">
+								<?php $list_count = 0;?>
+								@foreach(\App\Book::all() as $book)
+								<div class="tab-pane book-hub <?php if($list_count === 0){ echo 'active';} ?>" id="book{{$book->id}}" role="tabpanel">
+									<table class="col-md-12 table table-responsive">
+										<thead>
+											<tr>
+												<th>Book ID</th>
+												<th>Title</th>
+												<th>Author</th>
+												<th>Description</th>
+												<th>Actions</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>{{$book->id}}</td>
+												<td>{{$book->title}}</td>
+												<td>{{$book->authors->name}}</td>
+												<td>{{$book->description}}</td>
+												<td>
+													<button class="update-book btn btn-success" data-collection="{{$book}}">Update</button>
+													<button class="delete-book btn btn-danger" data-id="{{$book->id}}" data-name="{{$book->title}}">- Remove</button>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<?php $list_count++ ?>
+								</div>
+								@endforeach
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end of books section -->
+			<!--  -->
+
+				<!-- Manage authors section -->
+				<div class="col-md-3">
+					<button class="btn btn-outline-primary btn-block mb-2" type="button" data-toggle="modal" data-target="#add-author">Add Author</button>
+					<ul class="list-group">
+						@foreach(\App\Author::all() as $author)
+						<li class="list-group-item d-flex justify-content-between align-items-center">
+							<a href="#collapse-{{$author->id}}" data-toggle="collapse"  role="button">{{$author->name}}</a>
+							<span class="badge badge-primary badge-pill">{{$author->books->count()}}</span>
+							<div id="collapse-{{$author->id}}" class="collapse">
+								<a class="btn btn-block btn-primary" href="/AuthorWorks/{{$author->id}}" role="button">View Books</a>
+								<button class="update-author btn btn-block" data-id="{{$author->id}}" data-name="{{$author->name}}">Update</button>
+								<button class="delete-author btn btn-block btn-danger" data-id="{{$author->id}}" data-name="{{$author->name}}">Remove</button>
+							</div>
+						</li>
+						@endforeach
+					</ul>
+				</div>
+				<!-- end of authors section -->
+				<!-- Statuses section -->
+				<div class="col-md-4">
+					<button class="btn btn-outline-primary btn-block" type="button" data-toggle="modal" data-target="#add-status">Add Status</button>
+
+					<div class="row justify-content-center text-center">	
+					@foreach(\App\Status::all() as $status)
+						<div class="col-md-4 rounded m-1 text-center">
+							<div class="row">
+								<a href="#collapse-statuses-{{$status->id}}" data-toggle="collapse" class="list-group-item d-flex justify-content-between align-items-center d-inline col-md-12 rounded m-1 text-center">
+									{{$status->name}}
+								</a>
+								<div id="collapse-statuses-{{$status->id}}" class="collapse col-md-12">
+									<button class="update-status btn btn-block update-status" data-id="{{$status->id}}" data-name="{{$status->name}}">Update</button>
+									<button class="delete-status btn btn-block btn-danger delete-status" data-id="{{$status->id}}">Remove</button>
+								</div>
+							</div>
+						</div>
+						
+					@endforeach
+					</div>
+				</div>
+				<!-- End of statuses section -->
+
+				<!-- Categories Section -->
+				<div class="col-md-3">
+					<button class="btn btn-outline-primary btn-block" type="button" data-toggle="modal" data-target="#add-category">Add Category</button>
+					<div class="row justify-content-center">	
+					@foreach(\App\Category::all() as $category)
+						<div class="col-md-4 rounded m-1 text-center">
+							<div class="row">
+								<a href="#collapse-categories-{{$category->id}}" data-toggle="collapse" class="list-group-item d-flex justify-content-between align-items-center d-inline col-md-12 rounded m-1 text-center">
+									{{$category->name}}
+								</a>
+								<div id="collapse-categories-{{$category->id}}" class="collapse col-md-12">
+									<button class="update-category btn btn-block" data-id="{{$category->id}}" data-name="{{$category->name}}">Update</button>
+									<button class="delete-category btn btn-block btn-danger delete-status" data-id="{{$category->id}}">Remove</button>
+								</div>
+							</div>
+						</div>
+						
+					@endforeach
+					</div>
+				</div>
+				<!-- End of Categories Section -->
+
+
+				
+
+				
+
+			</div> <!-- end of row inside 12 column grid -->
+
+		</div>
+		<h5 class="text-center col-md-12">Users</h5>
+		<div class="col-md-10">
+			<!-- Manager users section -->
+			
+					<!-- <h5>All Users</h5> -->
+					<table class="table table-borderless table-light">
+						<!-- can be table-dark -->
+						<thead>
+							<tr>
+								<th scope="col">User ID</th>
+								<th scope="col">User Email</th>
+								<th scope="col">Member Since</th>
+								<th scope="col">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach(\App\User::all() as $user)
+							<tr>
+								<th scope="row">{{$user->id}}</th>
+								<td>{{$user->email}}</td>
+								<td>{{$user->created_at->diffForHumans()}}</td>
+								<td>
+									@if($user->roles->name == "admin" && $user->id === Auth::user()->id)
+									<button class="edit-current-user btn" role="button" data-collection="{{$user}}">Edit Profile</button>
+									@elseif($user->roles->name != "admin")
+									<form action="/user/makeAdmin" method="POST" class="d-inline">
+										@csrf
+										{{ method_field("PATCH") }}
+										<input type="number" name="user_id" value="{{$user->id}}" hidden>
+										<button class="btn btn-danger" type="submit">Make Admin</button>
+									</form>
+									@else
+									<form action="/user/removeAdmin" method="POST" class="d-inline">
+										@csrf
+										{{ method_field("PATCH") }}
+										<input type="number" name="user_id" value="{{$user->id}}" hidden>
+										<button class="btn btn-danger" type="submit">Remove Admin</button>
+									</form>
+									@endif
+									<button class="view-user btn btn-primary" data-collection="{{$user}}">Details</button>
+								</td>
+							</tr>
+							@endforeach
+						</tbody>
+					</table>
 			
 		</div>
 
@@ -628,7 +646,8 @@
 	<div class="modal-dialog" role="dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<img id="user-dp" class="img-responsive" src="" alt="No Profile Picture Added">
+				<!-- <img id="user-dp" class="img-responsive" src="" alt="No Profile Picture Added"> -->
+				<h5>Edit Profile</h5>
 				<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
 			</div>
 			<div class="modal-body">

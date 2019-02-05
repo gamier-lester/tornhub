@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Session;
 use App\Book;
+Use App\Transaction;
 
 class BookController extends Controller
 {
@@ -90,6 +91,15 @@ class BookController extends Controller
         $book->forceDelete();
         // echo $id;
         return redirect('/AuthorWorks/'.$id);
+    }
+
+    public function receiveRequest(Request $collection){
+        $transaction = Transaction::find($collection->transaction_id);
+        //var_dump($transaction);
+        $transaction->transaction_status = 9;
+        $transaction->save();
+
+        return redirect('/assets');
     }
 
 }

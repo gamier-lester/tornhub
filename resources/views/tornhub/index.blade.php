@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-	<div class="row">
+	<div class="row justify-content-center mx-0">
 		<div class="col-md-3">
 			<ul class="list-group">
 				<li class="list-group-item d-flex justify-content-between align-items-center">
@@ -14,15 +14,15 @@
 				@endforeach
 			</ul>
 		</div>
-		<div class="col-md-9">
-			<div class="row">
+		<div class="col-md-8">
+			<div class="row justify-content-center">
 				@foreach($books as $book)
-				<div class="col-md-5">
+				<div class="col-md-5 mb-3">
 					<div class="card">
-						<img class="card-img-top" src="/{{$book->image_path}}" alt="Book Picture">
+						<img class="card-img-top" src="/{{$book->image_path}}" alt="Book Picture" style="width: 100%; height: 300px;">
 						<div class="card-body">
 							<h5 class="card-title">{{$book->title}}</h5>
-							<p class="card-text">asdasd</p>
+							<p class="card-text">{{$book->authors->name}}</p>
 						</div>
 						<div class="card-footer">
 							{{-- {{dd($book->transactions)}} --}}
@@ -33,7 +33,7 @@
 										@csrf
 										{{ method_field("PATCH") }}
 										<input type="number" name="transaction_id" value="{{$transaction->id}}" hidden>
-										<button>Return</button>
+										<button class="btn btn-block bg-primary" type="submit">Return</button>
 									</form>
 									@else
 										<form action="/book/borrow" method="POST" class="d-inline">
@@ -50,7 +50,7 @@
 									@csrf
 									{{ method_field("PATCH") }}
 									<input type="number" name="transaction_id" value="{{$book->transactions->id}}" hidden>
-									<button>Return</button>
+									<button class="btn btn-block bg-primary" type="submit">Return</button>
 								</form>
 							@else
 								<form action="/book/borrow" method="POST" class="d-inline">
@@ -62,22 +62,22 @@
 							@endif --}}
 							<?php $stat_count = 0; $transaction_id = 0?>
 							@foreach(\App\Transaction::all() as $transaction)
-								@if($transaction->user_id === Auth::user()->id && $transaction->book_id === $book->id && $transaction->transaction_status === 4)
+								@if($transaction->user_id === Auth::user()->id && $transaction->book_id === $book->id && ($transaction->statuses->name === 'approved' || $transaction->statuses->name === 'received'))
 									{{-- if transaction is approved --}}
 								<?php $stat_count = 2; $transaction_id = $transaction->id;?>
-								@elseif($transaction->user_id === Auth::user()->id && $transaction->book_id === $book->id && $transaction->transaction_status === 3)
+								@elseif($transaction->user_id === Auth::user()->id && $transaction->book_id === $book->id && $transaction->statuses->name === 'pending')
 									{{-- if transaction is still pending --}}
 									<?php $stat_count = 1; $transaction_id = $transaction->id;?>
 								@endif
 							@endforeach
 							@if($stat_count === 1)
-								<button>Pending</button>
+								<button class="btn btn-block bg-primary disabled" type="submit">Pending</button>
 							@elseif($stat_count === 2)
 								<form action="/book/return" method="POST" class="d-inline">
 									@csrf
 									{{ method_field("PATCH") }}
 									<input type="number" name="transaction_id" value="{{$transaction_id}}" hidden>
-									<button>Return</button>
+									<button class="btn btn-block bg-primary" type="submit">Return</button>
 								</form>
 							@else
 								<form action="/book/borrow" method="POST" class="d-inline">

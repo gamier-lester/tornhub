@@ -59,6 +59,19 @@ Route::middleware("auth")->group(function () {
 	Route::delete('/book/forceRemove/{id}', 'BookController@bookForceRemove');
 	Route::patch('/admin/updateProfile', 'MainController@updateProfile');
 	Route::patch('/user/update', 'MainController@updateMyProfile');
+	Route::patch('/user/update/image', 'MainController@updateMyProfilePic');
+	Route::patch('/requestReceive', 'BookController@receiveRequest');
 });
 
+Route::get('/', function(){
+	return view('tornhub.home');
+});
+Route::get('/home', function(){
+	return view('tornhub.home');
+});
 Route::get('/test', 'HomeController@test');
+
+//pending
+//author books page
+//guest page
+//

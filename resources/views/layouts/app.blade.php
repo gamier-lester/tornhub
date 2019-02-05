@@ -7,7 +7,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Tornhub') }}</title>
+    <!-- <title>{{ config('app.name', 'Tornhub') }}</title> -->
+    <title>TornHub</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -21,10 +22,11 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/dashboard') }}">
-                    {{ config('app.name', 'TornHub') }}
+                <a class="navbar-brand" href="{{ url('/home') }}">
+                    <!-- {{ config('app.name', 'TornHub') }} -->
+                    TornHub
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -48,14 +50,18 @@
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
-                        @elseif(Auth::user()->account_role !== 1)
+                        @elseif(Auth::user()->roles->name === "user")
+                            <li class="nav-item">
+                                <a class="nav-link" href="/dashboard">Catalog</a>
+                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link" href="/assets">
                                     MyBackpack
                                     <span class="badge">
                                         <?php $backpack_count = 0;?>
                                         @foreach(\App\Transaction::all() as $transaction)
-                                            <?php if($transaction->user_id === Auth::user()->id && $transaction->transaction_status === 4){$backpack_count++;}?>
+                                            <?php if($transaction->user_id === Auth::user()->id && $transaction->statuses->name === 'received'){$backpack_count++;}?>
                                         @endforeach
                                         {{$backpack_count}}
                                     </span>
